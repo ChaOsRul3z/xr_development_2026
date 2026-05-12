@@ -3,7 +3,7 @@ using UnityEngine.AI;
 
 namespace Game.States
 {
-    public class ChaseState : BaseState
+    public class ChaseState : NavigationState
     {
         private static readonly int IS_RUNNING = Animator.StringToHash("isRunning");
 
@@ -12,38 +12,35 @@ namespace Game.States
             ) : base(_npc, _agent, _animator, _player)
         {
             name = STATE.CHASE;
-            agent.speed = 5;
-            agent.isStopped = false;
+            SetNavigationSpeed(5f);
         }
 
         public override void Enter()
         {
-            animator.SetTrigger(IS_RUNNING);
+            SetAnimatorTrigger(IS_RUNNING);
             base.Enter();
         }
 
         public override void Update()
         {
-            agent.SetDestination(player.position);
+            MoveToDestination(player.position);
 
             if (agent.hasPath)
             {
-             if (CanAttackPlayer())
+                if (CanAttackPlayer())
                 {
-                    nextState = new Attack(npc, agent, animator, player);  
-                    stage = EVENT.EXIT;
+                    TransitionToState(new AttackState(npc, agent, animator, player));
                 } 
-                else if(!CanSeePlayer())
+                else if (!CanSeePlayer())
                 {
-                    nextState = new PatrolState(npc, agent, animator, player);  
-                    stage = EVENT.EXIT;
+                    TransitionToState(new PatrolState(npc, agent, animator, player));
                 }   
             }
         }
 
         public override void Exit()
         {
-            animator.ResetTrigger(IS_RUNNING);
+            ResetAnimatorTrigger(IS_RUNNING);
             base.Exit();
         }
     }

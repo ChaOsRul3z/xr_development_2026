@@ -23,9 +23,9 @@ namespace Game.States
         protected BaseState nextState;
         protected NavMeshAgent agent;
 
-        float visibilityDistance = 10.0f;
-        float visibilityAngle = 30.0f;
-        float shootDistance = 7.0f;
+        protected float visibilityDistance = 10.0f;
+        protected float visibilityAngle = 30.0f;
+        protected float shootDistance = 7.0f;
 
         public BaseState(GameObject _npc, NavMeshAgent _agent, Animator _animator, Transform _player)
         {
@@ -75,6 +75,22 @@ namespace Game.States
             }
 
             return false;
+        }
+
+        protected void SetAnimatorTrigger(int animHash)
+        {
+            animator.SetTrigger(animHash);
+        }
+
+        protected void ResetAnimatorTrigger(int animHash)
+        {
+            animator.ResetTrigger(animHash);
+        }
+
+        protected void TransitionToState(BaseState newState)
+        {
+            nextState = newState;
+            stage = EVENT.EXIT;
         }
     }
 }

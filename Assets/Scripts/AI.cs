@@ -11,9 +11,10 @@ public class AI : MonoBehaviour
 
     void Start()
     {
+        GameManager.Instance.Init();
         agent = this.GetComponent<NavMeshAgent>();
         animator = this.GetComponent<Animator>();
-        currentState = new Idle(this.gameObject, agent, animator, player);
+        currentState = new IdleState(this.gameObject, agent, animator, player);
     }
 
     void Update()

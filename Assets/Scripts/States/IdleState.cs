@@ -3,11 +3,11 @@ using UnityEngine.AI;
 
 namespace Game.States
 {
-    public class Idle : BaseState
+    public class IdleState : BaseState
     {
         private static readonly int IS_IDLE = Animator.StringToHash("isIdle");
 
-        public Idle(
+        public IdleState(
             GameObject _npc, NavMeshAgent _agent, Animator _animator, Transform _player
             ) : base(_npc, _agent, _animator, _player)
         {
@@ -16,7 +16,7 @@ namespace Game.States
 
         public override void Enter()
         {
-            animator.SetTrigger(IS_IDLE);
+            SetAnimatorTrigger(IS_IDLE);
             base.Enter();
         }
 
@@ -24,19 +24,17 @@ namespace Game.States
         {
             if (CanSeePlayer())
             {
-                nextState = new ChaseState(npc, agent, animator, player);
-                stage = EVENT.EXIT;
+                TransitionToState(new ChaseState(npc, agent, animator, player));
             }
             else if (Random.Range(0, 100) < 10)
             {
-                nextState = new PatrolState(npc, agent, animator, player);
-                stage = EVENT.EXIT;
+                TransitionToState(new PatrolState(npc, agent, animator, player));
             }
         }
 
         public override void Exit()
         {
-            animator.ResetTrigger(IS_IDLE);
+            ResetAnimatorTrigger(IS_IDLE);
             base.Exit();
         }
     }

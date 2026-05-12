@@ -3,7 +3,7 @@ using UnityEngine.AI;
 
 namespace Game.States
 {
-    public class PatrolState : BaseState
+    public class PatrolState : NavigationState
     {
         private static readonly int IS_WALKING = Animator.StringToHash("isWalking");
 
@@ -14,18 +14,17 @@ namespace Game.States
             ) : base(_npc, _agent, _animator, _player)
         {
             name = STATE.PATROL;
-            agent.speed = 2;
-            agent.isStopped = false;
+            SetNavigationSpeed(2f);
         }
 
         public override void Enter()
         {
             float lastDistance = Mathf.Infinity;
-            for (int i = 0; i < GameEnvironment.Instance.Checkpoints.Count; i++)
+            for (int i = 0; i < GameManager.Instance.Checkpoints.Count; i++)
             {
                 float distance = Vector3.Distance(
                     npc.transform.position, 
-                    GameEnvironment.Instance.Checkpoints[i].transform.position
+                    GameManager.Instance.Checkpoints[i].transform.position
                 );
                 
                 if (distance < lastDistance)
@@ -35,7 +34,7 @@ namespace Game.States
                 }
             }
 
-            animator.SetTrigger(IS_WALKING);
+            SetAnimatorTrigger(IS_WALKING);
             base.Enter();
         }
 
@@ -43,7 +42,7 @@ namespace Game.States
         {
             if (agent.remainingDistance < 1)
             {
-                if(currentIndex >= GameEnvironment.Instance.Checkpoints.Count - 1)
+                if(currentIndex >= GameManager.Instance.Checkpoints.Count - 1)
                 {
                     currentIndex = 0;
                 }
@@ -52,19 +51,18 @@ namespace Game.States
                     currentIndex++;   
                 }
 
-                agent.SetDestination(GameEnvironment.Instance.Checkpoints[currentIndex].transform.position);
+                MoveToDestination(GameManager.Instance.Checkpoints[currentIndex].transform.position);
             }
 
             if (CanSeePlayer())
             {
-                nextState = new ChaseState(npc, agent, animator, player);
-                stage = EVENT.EXIT;
+                TransitionToState(new ChaseState(npc, agent, animator, player));
             }
         }
 
         public override void Exit()
         {
-            animator.ResetTrigger(IS_WALKING);
+            ResetAnimatorTrigger(IS_WALKING);
             base.Exit();
         }
     }
