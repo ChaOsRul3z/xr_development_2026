@@ -9,8 +9,7 @@ public class AI : MonoBehaviour
     public Transform player;
     BaseState currentState;
 
-[field: SerializeField] public GameManager GameManager { get; private set; }
-    [SerializeField] protected GameManager _gameManager;
+    [field: SerializeField] public GameManager GameManager { get; private set; }
     [field: SerializeField] public float RotationSpeed { get; set; } = 2.0f;
     [field: SerializeField] public float VisibilityDistance { get; private set; } = 10.0f;
     [field: SerializeField] public float VisibilityAngle { get; private set; } = 30.0f;
