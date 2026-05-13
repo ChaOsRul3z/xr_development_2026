@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 3
   tags:
   - Anchor
+  - Checkpoint
+  - Fire
+  - CinemachineTarget
+  - HidingSpot
   layers:
   - Default
   - TransparentFX

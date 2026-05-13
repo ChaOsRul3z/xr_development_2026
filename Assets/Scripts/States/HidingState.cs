@@ -3,33 +3,26 @@ using UnityEngine.AI;
 
 namespace Game.States
 {
-    public class ChaseState : BaseState
+    public class HidingState : BaseState
     {
-        private static readonly int IS_RUNNING = Animator.StringToHash("isRunning");
+        private static readonly int IS_RUNNING = Animator.StringToHash("isIdle");
 
-        public ChaseState(
+        public HidingState(
             GameObject _npc, NavMeshAgent _agent, Animator _animator, Transform _player
             ) : base(_npc, _agent, _animator, _player)
         {
-            state = STATE.CHASE;
+            state = STATE.HIDING;
             SetNavigationSpeed(5f);
         }
 
         public override void Enter()
         {
             SetAnimatorTrigger(IS_RUNNING);
-            // StartAgent();
             base.Enter();
         }
 
         public override void Update()
         {
-            if (IsBehind(player))
-            {
-                TransitionToState(new FleeState(npc, agent, animator, player));
-                return;
-            }
-
             MoveTo(player.position);
 
             if (agent.hasPath)

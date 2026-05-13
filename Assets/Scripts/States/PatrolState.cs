@@ -13,7 +13,7 @@ namespace Game.States
             GameObject _npc, NavMeshAgent _agent, Animator _animator, Transform _player
             ) : base(_npc, _agent, _animator, _player)
         {
-            name = STATE.PATROL;
+            state = STATE.PATROL;
             SetNavigationSpeed(2f);
         }
 
@@ -40,6 +40,11 @@ namespace Game.States
 
         public override void Update()
         {
+            if (IsBehind(player) && DistanceTo(player) < 10f)
+            {
+                TransitionToState(new FleeState(npc, agent, animator, player));
+                return;
+            }
             if (agent.remainingDistance < 1)
             {
                 if(currentIndex >= SceneExecutionWorker.Instance.GameCheckpoints.Count - 1)

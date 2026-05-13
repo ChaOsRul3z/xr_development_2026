@@ -11,7 +11,7 @@ namespace Game.States
             GameObject _npc, NavMeshAgent _agent, Animator _animator, Transform _player
             ) : base(_npc, _agent, _animator, _player)
         {
-            name = STATE.IDLE;
+            state = STATE.IDLE;
         }
 
         public override void Enter()

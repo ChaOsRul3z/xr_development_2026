@@ -1377,12 +1377,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AI
   player: {fileID: 720114699}
-  gameManager: {fileID: 11400000, guid: 27bc013ced2214a40945bd121c13b3fe, type: 2}
-  _rotationSpeed: 2
-  _visibilityDistance: 10
-  _visibilityAngle: 30
-  _shootDistance: 7
-  _navigationSpeed: 5
+  <GameManager>k__BackingField: {fileID: 11400000, guid: 27bc013ced2214a40945bd121c13b3fe, type: 2}
+  <RotationSpeed>k__BackingField: 2
+  <VisibilityDistance>k__BackingField: 10
+  <VisibilityAngle>k__BackingField: 30
+  <ShootDistance>k__BackingField: 7
+  <NavigationSpeed>k__BackingField: 5
 --- !u!1001 &830883468
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -13,7 +13,7 @@ namespace Game.States
             GameObject _npc, NavMeshAgent _agent, Animator _animator, Transform _player
             ) : base(_npc, _agent, _animator, _player)
         {
-            name = STATE.ATTACK;
+            state = STATE.ATTACK;
             shootAudio = npc.GetComponent<AudioSource>();
         }
 
@@ -27,8 +27,18 @@ namespace Game.States
 
         public override void Update()
         {
+            float distance = DistanceTo(player);
+            bool playerBehind = IsBehind(player, -0.2f);
+
+            if (playerBehind && distance < 6.0f)
+            {
+                RotateTowards(player.position - npc.transform.position, component.RotationSpeed);
+                TransitionToState(new FleeState(npc, agent, animator, player));
+                return;
+            }
+
             Vector3 direction = player.position - npc.transform.position;
-            RotateTowards(direction, npc.GetComponent<AI>().RotationSpeed);
+            RotateTowards(direction, component.RotationSpeed);
 
             if (!CanAttack(player))
             {

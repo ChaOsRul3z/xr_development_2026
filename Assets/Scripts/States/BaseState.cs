@@ -9,7 +9,7 @@ namespace Game.States
 
         public enum STATE
         {
-            IDLE, PATROL, CHASE, ATTACK, FLEE, SLEEP, SPRINT_TO_HIDING_SPOT, SEARCHING_FOR_SPOT
+            IDLE, PATROL, CHASE, ATTACK, FLEE, HIDING
         };
 
         public enum EVENT
@@ -17,7 +17,7 @@ namespace Game.States
         ENTER, UPDATE, EXIT   
         };
 
-        public STATE name;
+        public STATE state;
         protected EVENT stage;
         protected GameObject npc;
         protected Animator animator;
@@ -48,11 +48,17 @@ namespace Game.States
             if (stage == EVENT.UPDATE) Update();
             if (stage == EVENT.EXIT)
             {
-                Debug.Log("Transitioning from " + name + " to " + nextState.name);
+                Debug.Log("Transitioning from " + state + " to " + nextState.state);
                 Exit();
                 return nextState;
             }
             return this;
+        }
+
+        public bool IsBehind(Transform target, float threshold = -0.25f)
+        {
+            Vector3 toPlayer = (target.position - npc.transform.position).normalized;
+            return Vector3.Dot(npc.transform.forward, toPlayer) < threshold;
         }
 
         public bool CanSee(Transform target)
