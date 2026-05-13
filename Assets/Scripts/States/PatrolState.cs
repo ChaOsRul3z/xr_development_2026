@@ -3,7 +3,7 @@ using UnityEngine.AI;
 
 namespace Game.States
 {
-    public class PatrolState : NavigationState
+    public class PatrolState : BaseState
     {
         private static readonly int IS_WALKING = Animator.StringToHash("isWalking");
 
@@ -20,11 +20,11 @@ namespace Game.States
         public override void Enter()
         {
             float lastDistance = Mathf.Infinity;
-            for (int i = 0; i < GameManager.Instance.Checkpoints.Count; i++)
+            for (int i = 0; i < gameManager.Checkpoints.Count; i++)
             {
                 float distance = Vector3.Distance(
                     npc.transform.position, 
-                    GameManager.Instance.Checkpoints[i].transform.position
+                    gameManager.Checkpoints[i].transform.position
                 );
                 
                 if (distance < lastDistance)
@@ -42,7 +42,7 @@ namespace Game.States
         {
             if (agent.remainingDistance < 1)
             {
-                if(currentIndex >= GameManager.Instance.Checkpoints.Count - 1)
+                if(currentIndex >= SceneExecutionWorker.Instance.GameCheckpoints.Count - 1)
                 {
                     currentIndex = 0;
                 }
@@ -51,10 +51,10 @@ namespace Game.States
                     currentIndex++;   
                 }
 
-                MoveToDestination(GameManager.Instance.Checkpoints[currentIndex].transform.position);
+                MoveTo(SceneExecutionWorker.Instance.GameCheckpoints[currentIndex].transform.position);
             }
 
-            if (CanSeePlayer())
+            if (CanSee(player))
             {
                 TransitionToState(new ChaseState(npc, agent, animator, player));
             }

@@ -17,16 +17,18 @@ namespace Game.States
         public override void Enter()
         {
             SetAnimatorTrigger(IS_IDLE);
+            StartAgent();
             base.Enter();
         }
 
         public override void Update()
         {
-            if (CanSeePlayer())
+            if (CanSee(player))
             {
                 TransitionToState(new ChaseState(npc, agent, animator, player));
             }
-            else if (Random.Range(0, 100) < 10)
+            else 
+            if (Random.Range(0, 100) < 10)
             {
                 TransitionToState(new PatrolState(npc, agent, animator, player));
             }

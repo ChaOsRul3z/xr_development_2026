@@ -3,7 +3,7 @@ using UnityEngine.AI;
 
 namespace Game.States
 {
-    public class ChaseState : NavigationState
+    public class ChaseState : BaseState
     {
         private static readonly int IS_RUNNING = Animator.StringToHash("isRunning");
 
@@ -18,23 +18,24 @@ namespace Game.States
         public override void Enter()
         {
             SetAnimatorTrigger(IS_RUNNING);
+            // StartAgent();
             base.Enter();
         }
 
         public override void Update()
         {
-            MoveToDestination(player.position);
+            MoveTo(player.position);
 
             if (agent.hasPath)
             {
-                if (CanAttackPlayer())
+                if (CanAttack(player))
                 {
                     TransitionToState(new AttackState(npc, agent, animator, player));
-                } 
-                else if (!CanSeePlayer())
+                }
+                else if(!CanSee(player))
                 {
                     TransitionToState(new PatrolState(npc, agent, animator, player));
-                }   
+                }
             }
         }
 

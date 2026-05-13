@@ -5,9 +5,11 @@ namespace Game.States
 {
     public class BaseState
     {
+        [SerializeField] protected GameManager gameManager;
+
         public enum STATE
         {
-            IDLE, PATROL, CHASE, ATTACK, SLEEP
+            IDLE, PATROL, CHASE, ATTACK, FLEE, SLEEP, SPRINT_TO_HIDING_SPOT, SEARCHING_FOR_SPOT
         };
 
         public enum EVENT
@@ -22,10 +24,7 @@ namespace Game.States
         protected Transform player;
         protected BaseState nextState;
         protected NavMeshAgent agent;
-
-        protected float visibilityDistance = 10.0f;
-        protected float visibilityAngle = 30.0f;
-        protected float shootDistance = 7.0f;
+        protected AI component;
 
         public BaseState(GameObject _npc, NavMeshAgent _agent, Animator _animator, Transform _player)
         {
@@ -34,6 +33,9 @@ namespace Game.States
             animator = _animator;
             stage = EVENT.ENTER;
             player = _player;
+            component = npc.GetComponent<AI>();
+
+            gameManager = Resources.Load<GameManager>("GameManager");
         }
 
         public virtual void Enter() { stage = EVENT.UPDATE; }
@@ -46,18 +48,19 @@ namespace Game.States
             if (stage == EVENT.UPDATE) Update();
             if (stage == EVENT.EXIT)
             {
+                Debug.Log("Transitioning from " + name + " to " + nextState.name);
                 Exit();
                 return nextState;
             }
             return this;
         }
 
-        public bool CanSeePlayer()
+        public bool CanSee(Transform target)
         {
-            Vector3 direction = player.position - npc.transform.position;
+            Vector3 direction = target.position - npc.transform.position;
             float angle = Vector3.Angle(direction, npc.transform.forward);
 
-            if (direction.magnitude < visibilityDistance && angle < visibilityAngle)
+            if (direction.magnitude < component.VisibilityDistance && angle < component.VisibilityAngle)
             {
                 return true;
             }
@@ -65,16 +68,21 @@ namespace Game.States
             return false;
         }
 
-        public bool CanAttackPlayer()
+        public bool CanAttack(Transform target)
         {
-            Vector3 direction = player.position - npc.transform.position;
+            Vector3 direction = target.position - npc.transform.position;
 
-            if (direction.magnitude < shootDistance)
+            if (direction.magnitude < component.ShootDistance)
             {
                 return true;
             }
 
             return false;
+        }
+
+        public float DistanceTo(Transform target)
+        {
+            return Vector3.Distance(npc.transform.position, target.position);
         }
 
         protected void SetAnimatorTrigger(int animHash)
@@ -91,6 +99,55 @@ namespace Game.States
         {
             nextState = newState;
             stage = EVENT.EXIT;
+        }
+
+        protected void PlayAudio(AudioSource audioSource)
+        {
+            if(audioSource != null && !audioSource.isPlaying)
+            {
+                audioSource.Play();
+            }
+        }
+
+        protected void StopAudio(AudioSource audioSource)
+        {
+            if(audioSource != null && audioSource.isPlaying)
+            {
+                audioSource.Stop();
+            }
+        }
+
+        protected void MoveTo(Vector3 target)
+        {
+            agent.SetDestination(target);
+        }
+
+        protected void SetNavigationSpeed(float speed)
+        {
+            agent.speed = speed;
+        }
+
+        protected void RotateTowards(Vector3 targetDirection, float speed)
+        {
+            Vector3 direction = targetDirection;
+            direction.y = 0;
+
+            npc.transform.rotation = Quaternion.Slerp(
+                npc.transform.rotation,
+                Quaternion.LookRotation(direction),
+                Time.deltaTime * speed
+            );
+        }
+
+        protected void StopAgent()
+        {
+            agent.isStopped = true;
+        }
+
+        protected void StartAgent(float speed = 5f)
+        {
+            agent.isStopped = false;
+            agent.speed = speed;
         }
     }
 }

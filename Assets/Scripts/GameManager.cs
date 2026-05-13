@@ -1,15 +1,35 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
-public class GameManager : Singleton<GameManager>
+[CreateAssetMenu(fileName = "GameManager", menuName = "Systems/GameManager")]
+public class GameManager : ScriptableObject
 {
     public List<GameObject> Checkpoints { get; private set; } =  new List<GameObject>();
 	
-    protected int score = 0;
+    public enum GameState
+    {
+        MainMenu,
+        Playing,
+        Paused,
+        GameOver
+    }
 
-    void Awake()
-    {        
+    [NonSerialized] protected GameState CurrentState;
+    [NonSerialized] protected int _score;
+
+    public int Score => _score;
+
+    public event Action<GameState> OnGameStateChanged;
+    public event Action<int> OnScoreChanged;
+
+    public void Initialize()
+    {
+        _score = 0;
+        CurrentState = GameState.MainMenu;
+
+        this.Checkpoints.Clear();
+
         this.Checkpoints.AddRange(
             GameObject.FindGameObjectsWithTag("Checkpoint")
         );
@@ -17,33 +37,36 @@ public class GameManager : Singleton<GameManager>
         this.Checkpoints.Sort((a, b) => a.name.CompareTo(b.name));
     }
 
-    private void AddScore()
+    public void UpdateState(GameState newState)
     {
-        score += 10;
-        
+        if (CurrentState != newState)
+        {
+            CurrentState = newState;
+
+            switch (newState)
+            {
+                case GameState.MainMenu:
+                Time.timeScale = 1f;
+                _score = 0;
+                    break;
+                case GameState.Playing:
+                Time.timeScale = 1f;
+                    break;
+                case GameState.Paused:
+                Time.timeScale = 0f;
+                    break;
+                case GameState.GameOver:
+                Time.timeScale = 0f;
+                    break;
+            }
+
+            OnGameStateChanged?.Invoke(CurrentState);
+        }
     }
 
-    void Update()
+    public void AddScore(int amount)
     {
-        if (Input.GetKeyDown(KeyCode.X))
-        {
-            AddScore();
-            Debug.Log("Score: " + this.score);
-        }
-
-        if (Input.GetKeyDown(KeyCode.Z))
-        {
-            SwitchScene("Scene_2");
-        }
-
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            SwitchScene("GuardScene");
-        }
-    }
-
-    void SwitchScene(string sceneName = "Scene_2")
-    {
-        SceneManager.LoadScene(sceneName);
+        _score += amount;
+        OnScoreChanged?.Invoke(_score);
     }
 }

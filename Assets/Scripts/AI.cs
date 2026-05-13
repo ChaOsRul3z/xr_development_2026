@@ -9,11 +9,20 @@ public class AI : MonoBehaviour
     public Transform player;
     BaseState currentState;
 
+[field: SerializeField] public GameManager GameManager { get; private set; }
+    [SerializeField] protected GameManager _gameManager;
+    [field: SerializeField] public float RotationSpeed { get; set; } = 2.0f;
+    [field: SerializeField] public float VisibilityDistance { get; private set; } = 10.0f;
+    [field: SerializeField] public float VisibilityAngle { get; private set; } = 30.0f;
+    [field: SerializeField] public float ShootDistance { get; private set; } = 7.0f;
+    [field: SerializeField] public float NavigationSpeed { get; private set; } = 5.0f;
+
     void Start()
     {
-        GameManager.Instance.Init();
         agent = this.GetComponent<NavMeshAgent>();
         animator = this.GetComponent<Animator>();
+        
+        
         currentState = new IdleState(this.gameObject, agent, animator, player);
     }
 
