@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -11,21 +12,18 @@ namespace Game.States
             GameObject _npc, NavMeshAgent _agent, Animator _animator, Transform _player
             ) : base(_npc, _agent, _animator, _player)
         {
-            state = STATE.CHASE;
-            SetNavigationSpeed(component.NavigationSpeed * 1.5f);
+            state = STATE.CHASE;           
         }
 
         public override void Enter()
         {
             SetAnimatorTrigger(IS_RUNNING);
-            // StartAgent();
+            SetNavigationSpeed(component.NavigationSpeed * 1.5f);
             base.Enter();
         }
 
         public override void Update()
-        {
-            SetNavigationSpeed(component.NavigationSpeed * 1.5f);
-            
+        {           
             if (IsBehind(player))
             {
                 TransitionToState(new FleeState(npc, agent, animator, player));
@@ -50,6 +48,7 @@ namespace Game.States
         public override void Exit()
         {
             ResetAnimatorTrigger(IS_RUNNING);
+            SetNavigationSpeed(component.NavigationSpeed);
             base.Exit();
         }
     }

@@ -22,6 +22,23 @@ public class GameManager : ScriptableObject
 
     public event Action<GameState> OnGameStateChanged;
     public event Action<int> OnScoreChanged;
+    public event Action<float> OnNavigationSpeedChanged;
+
+    [SerializeField]
+    float navigationSpeed = 2f;
+
+    public float NavigationSpeed
+    {
+        get => navigationSpeed;
+        set
+        {
+            if (Mathf.Approximately(navigationSpeed, value)) return;
+            navigationSpeed = value;
+            OnNavigationSpeedChanged?.Invoke(value);
+        }
+    }
+
+    public void SetNavigationSpeed(float value) => NavigationSpeed = value;
 
     public void Initialize()
     {

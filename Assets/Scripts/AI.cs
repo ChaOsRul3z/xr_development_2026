@@ -23,6 +23,25 @@ public class AI : MonoBehaviour
         
         
         currentState = new IdleState(this.gameObject, agent, animator, player);
+        
+        if (GameManager != null)
+        {
+            GameManager.OnNavigationSpeedChanged += OnNavigationSpeedChanged;
+            // initialize agent speed from GameManager
+            agent.speed = GameManager.NavigationSpeed;
+            NavigationSpeed = GameManager.NavigationSpeed;
+        }
+    }
+
+    void OnDestroy()
+    {
+        if (GameManager != null) GameManager.OnNavigationSpeedChanged -= OnNavigationSpeedChanged;
+    }
+
+    void OnNavigationSpeedChanged(float speed)
+    {
+        NavigationSpeed = speed;
+        if (agent != null) agent.speed = speed;
     }
 
     void Update()

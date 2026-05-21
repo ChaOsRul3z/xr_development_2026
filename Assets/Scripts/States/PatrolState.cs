@@ -14,7 +14,6 @@ namespace Game.States
             ) : base(_npc, _agent, _animator, _player)
         {
             state = STATE.PATROL;
-            SetNavigationSpeed(component.NavigationSpeed);
         }
 
         public override void Enter()
@@ -40,8 +39,6 @@ namespace Game.States
 
         public override void Update()
         {
-            SetNavigationSpeed(component.NavigationSpeed);
-
             if (IsBehind(player) && DistanceTo(player) < 10f)
             {
                 TransitionToState(new FleeState(npc, agent, animator, player));
