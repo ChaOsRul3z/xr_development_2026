@@ -12,7 +12,7 @@ namespace Game.States
             ) : base(_npc, _agent, _animator, _player)
         {
             state = STATE.CHASE;
-            SetNavigationSpeed(5f);
+            SetNavigationSpeed(component.NavigationSpeed * 1.5f);
         }
 
         public override void Enter()
@@ -24,6 +24,8 @@ namespace Game.States
 
         public override void Update()
         {
+            SetNavigationSpeed(component.NavigationSpeed * 1.5f);
+            
             if (IsBehind(player))
             {
                 TransitionToState(new FleeState(npc, agent, animator, player));
