@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
+using Game.Manager;
 
 namespace Game.States
 {
@@ -109,17 +110,31 @@ namespace Game.States
 
         protected void PlayAudio(AudioSource audioSource)
         {
-            if(audioSource != null && !audioSource.isPlaying)
+            if (audioSource != null)
             {
-                audioSource.Play();
+                if (AudioManager.Instance != null)
+                {
+                    AudioManager.Instance.Play(audioSource);
+                }
+                else if (!audioSource.isPlaying)
+                {
+                    audioSource.Play();
+                }
             }
         }
 
         protected void StopAudio(AudioSource audioSource)
         {
-            if(audioSource != null && audioSource.isPlaying)
+            if (audioSource != null)
             {
-                audioSource.Stop();
+                if (AudioManager.Instance != null)
+                {
+                    AudioManager.Instance.Stop(audioSource);
+                }
+                else if (audioSource.isPlaying)
+                {
+                    audioSource.Stop();
+                }
             }
         }
 
