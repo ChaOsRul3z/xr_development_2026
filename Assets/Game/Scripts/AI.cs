@@ -7,7 +7,6 @@ public class AI : MonoBehaviour
 {
     NavMeshAgent agent;
     Animator animator;
-    public Transform player;
     BaseState currentState;
 
     [field: SerializeField] public GameManager GameManager { get; private set; }
@@ -23,12 +22,11 @@ public class AI : MonoBehaviour
         animator = this.GetComponent<Animator>();
         
         
-        currentState = new IdleState(this.gameObject, agent, animator, player);
+        currentState = new IdleState(this.gameObject, agent, animator, GameManager.Player.transform);
         
         if (GameManager != null)
         {
             GameManager.OnNavigationSpeedChanged += OnNavigationSpeedChanged;
-            // initialize agent speed from GameManager
             agent.speed = GameManager.NavigationSpeed;
             NavigationSpeed = GameManager.NavigationSpeed;
         }

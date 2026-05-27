@@ -7,6 +7,7 @@ namespace Game.Manager
     public class GameManager : ScriptableObject
     {
         public List<GameObject> Checkpoints { get; private set; } =  new List<GameObject>();
+        public GameObject Player { get; private set;}
         
         public enum GameState
         {
@@ -25,8 +26,7 @@ namespace Game.Manager
         public event Action<int> OnScoreChanged;
         public event Action<float> OnNavigationSpeedChanged;
 
-        [SerializeField]
-        float navigationSpeed = 2f;
+        [SerializeField] float navigationSpeed = 2f;
 
         public float NavigationSpeed
         {
@@ -53,6 +53,8 @@ namespace Game.Manager
             );
 
             this.Checkpoints.Sort((a, b) => a.name.CompareTo(b.name));
+
+            Player = GameObject.FindGameObjectWithTag("Player");
         }
 
         public void UpdateState(GameState newState)
