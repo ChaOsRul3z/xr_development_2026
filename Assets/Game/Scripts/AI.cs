@@ -58,6 +58,14 @@ public class AI : MonoBehaviour
 
         if (GameManager == null)
         {
+            if (SceneExecutionWorker.HasInstance)
+            {
+                GameManager = SceneExecutionWorker.Instance.GameManager;
+            }
+        }
+
+        if (GameManager == null)
+        {
             GameManager = Resources.Load<GameManager>("GameManager");
         }
 
