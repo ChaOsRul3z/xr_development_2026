@@ -5,11 +5,16 @@ TagManager:
   serializedVersion: 3
   tags:
   - Anchor
+  - Checkpoint
+  - Fire
+  - CinemachineTarget
+  - HidingSpot
+  - Gate
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Overlay UI
   - Water
   - UI
   - 
